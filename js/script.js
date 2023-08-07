@@ -1,41 +1,113 @@
 "use strict";
 
-const buttons = document.querySelectorAll(".calculator__btn"),
-  display = document.querySelector(".calculator__display");
-let result = "5";
-let result2 = "10";
-buttons.forEach((element) => {
-  element.addEventListener("click", () => {
-    display.innerHTML = `<div>${element.textContent}<div>`;
-    // result += element.textContent;
-    // if (element.classList.contains("add")) {
-    //   console.log(+element.textContent);
-    // }
-    // console.log(element.classList.contains("add"));
-    // result = (+inputLira.value * data.current.rub).toFixed(2);
+let a = ""; // Первое число
+let b = ""; // Второе число
+let sign = ""; // Знак операции
+let finish = false;
 
-    // return element.textContent;
-  });
+const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+const actions = ["-", "+", "x", "÷"];
+
+const out = document.querySelector(".calculator__display"), // Дисплей калькулятора
+  clearBtn = document.querySelector(".ac"), // Кнопка очистить все
+  btnsWrapper = document.querySelector(".calculator__buttons"); // Обертка кнопок
+
+function clearAll() {
+  a = "";
+  b = "";
+  sign = "";
+  finish = false;
+  out.textContent = 0;
+  console.log("function 'clearAll' finished");
+}
+
+clearBtn.addEventListener("click", clearAll);
+
+btnsWrapper.addEventListener("click", (event) => {
+  // Если нажата не кнопка
+  if (!event.target.classList.contains("calculator__btn")) return;
+
+  // Если нажата кнопка очистить все
+  if (event.target.classList.contains("ac")) return;
+
+  // Если нажата кнопка очищаем дисплей калькулятора
+  out.textContent = "";
+
+  // Получаем нажатую кнопку
+  const key = event.target.textContent;
+
+  // Если нажата клавиша 0-9 или . -> формируем первое число и выводим на дисплей
+  if (digits.includes(key)) {
+    if (b === "" && sign === "") {
+      if (key === "." && a.includes(".")) {
+        a += "";
+        out.textContent = a;
+      } else if (key === "." && a === "") {
+        a = `0${key}`;
+        out.textContent = a;
+      } else {
+        a += key;
+        out.textContent = a;
+      }
+    } else if (a !== "" && b !== "" && finish) {
+      b = key;
+      finish = false;
+      out.textContent = b;
+    } else {
+      if (key === "." && b.includes(".")) {
+        b += "";
+        out.textContent = b;
+      } else if (key === "." && b === "") {
+        b = `0${key}`;
+        out.textContent = b;
+      } else {
+        b += key;
+        out.textContent = b;
+      }
+    }
+    console.log(a, sign, b);
+    return;
+  }
+
+  // Если нажата клавиша + - ÷ x -> формируем Знак операции и выводим на дисплей
+  if (actions.includes(key)) {
+    sign = key;
+    out.textContent = sign;
+    console.log(a, sign, b);
+    return;
+  }
+
+  // Если нажата клавиша =
+  if (key === "=") {
+    if (b === "") b = a;
+    switch (sign) {
+      case "+":
+        a = +a + +b;
+        break;
+      case "-":
+        a = +a - +b;
+        break;
+      case "x":
+        a = +a * +b;
+        break;
+      case "÷":
+        if (b === "0") {
+          out.textContent = "Ошибка";
+          a = "";
+          b = "";
+          sign = "";
+          finish = false;
+          return;
+        }
+        a = +a / +b;
+        break;
+    }
+    finish = true;
+    out.textContent = a;
+    console.log(a, sign, b);
+  }
+
+  // console.log(a);
 });
-// console.log(display);
-console.log(`${+result+(+result2)}`);
 
-// const inputLira = document.querySelector("#lira"),
-//   inputRub = document.querySelector("#rub");
-
-// inputLira.addEventListener("input", () => {
-//   const request = new XMLHttpRequest();
-
-//   request.open("GET", "js/current.json");
-//   request.setRequestHeader("Content-type", "application/json; charset=utf-8");
-//   request.send();
-
-//   request.addEventListener("load", () => {
-//     if (request.status === 200) {
-//       const data = JSON.parse(request.response);
-//       inputRub.value = (+inputLira.value * data.current.rub).toFixed(2);
-//     } else {
-//       inputRub.value = "Что-то пошло не так";
-//     }
-//   });
-// });
+// console.log(out.textContent = 777);
