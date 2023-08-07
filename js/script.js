@@ -18,7 +18,6 @@ function clearAll() {
   sign = "";
   finish = false;
   out.textContent = 0;
-  console.log("function 'clearAll' finished");
 }
 
 clearBtn.addEventListener("click", clearAll);
@@ -106,8 +105,4 @@ btnsWrapper.addEventListener("click", (event) => {
     out.textContent = a;
     console.log(a, sign, b);
   }
-
-  // console.log(a);
 });
-
-// console.log(out.textContent = 777);
